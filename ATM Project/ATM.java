@@ -3,23 +3,25 @@ import java.util.*;
 
 public class ATM {
 
+    private  static double balance = 20000;
+    private  static String pin = "1234";
 
-    public static boolean verifyCardDetails(String cardNumber, int expiryMonth, int expiryYear, String cardType) {
 
-        if (cardNumber.length() != 16) {
+
+    public static boolean verifyCardDetails(String cardNumber, int expiryMonth, int expiryYear, String cardType)
+      {
+
+          if (cardNumber.length() != 16) {
             System.out.println("Invalid card number length.");
             return false;
-        }
-
+          }
 
         if (expiryMonth < 1 || expiryMonth > 12) {
             System.out.println("Invalid expiry month.");
             return false;
         }
 
-
         int currentYear = java.time.Year.now().getValue();
-
 
         if (expiryYear < currentYear) {
             System.out.println("Card has expired.");
@@ -27,29 +29,21 @@ public class ATM {
         }
 
 
-
         if (isValidCardType(cardType)) {
             System.out.println("Invalid card type.");
             return false;
         }
 
-
         System.out.println("Valid card details.");
         return true;
-    }
+      }
 
 
 
     public static boolean isValidCardType(String cardType) {
 
-        if(cardType.equals("Master") || cardType.equals("Visa") || cardType.equals("Debit")  || cardType.equals("Credit"))
-        {
-            return true;
-        }
+        return cardType.equals("Master") || cardType.equals("Visa") || cardType.equals("Debit") || cardType.equals("Credit");
 
-
-
-        return false;
     }
 
 
@@ -71,97 +65,99 @@ public class ATM {
     }
 
 
-
-    public static void checkBalance( double totalBalance) {
-        System.out.println("Your balance is: $" + totalBalance);
+    public static void checkBalance( double balance) {
+        System.out.println("Your balance is: $" + balance);
 
     }
 
 
-    public static double withdraw( double totalBalance ,double withdrawAmount) {
+    public static double withdraw( double balance ,double withdrawAmount) {
 
-        if (withdrawAmount> totalBalance) {
+        if (withdrawAmount> balance) {
             System.out.println("Insufficient funds. Please try again.");
         } else {
-            totalBalance -= withdrawAmount;
-            System.out.println("Withdrawal successful. Remaining balance: $" + totalBalance);
+            balance -= withdrawAmount;
+            System.out.println("Withdrawal successful. Remaining balance: $" + balance);
         }
-        return totalBalance;
+        return balance;
     }
 
 
-    public static double deposit(double totalBalance ,double depositAmount) {
+    public static double deposit(double balance ,double depositAmount) {
 
-        totalBalance += depositAmount;
-        System.out.println("Deposit successful. Current balance: $" + totalBalance);
-        return totalBalance;
+        balance += depositAmount;
+        System.out.println("Deposit successful. Current balance: $" + balance);
+        return balance;
 
     }
 
 
+    public static String changePin(String pin) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your old PIN: ");
+
+        String oldPin = scanner.nextLine();
+
+        if (pin.equals(oldPin)) {
+
+            System.out.print("Enter new PIN: ");
+
+            pin = scanner.nextLine();
+
+
+            System.out.println("PIN changed successfully.");
+
+
+        } else {
+            System.out.println("Incorrect old PIN. PIN change failed.");
+        }
 
 
 
-
-
-
-    private static void changePin() {
-        System.out.print("Enter new PIN: ");
-        pin = scanner.nextLine();
-        System.out.println("PIN changed successfully.");
+        scanner.close();
+        return pin;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
     public static void displayMenu(Scanner scanner) {
-        while (true) {
-            System.out.println("\nMain Menu:");
-            System.out.println("1. Check Balance");
-            System.out.println("2. Withdraw");
-            System.out.println("3. Deposit");
-            System.out.println("4. View Transaction History");
-            System.out.println("5. Change PIN");
-            System.out.println("6. Exit");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+          while(true) {
+              System.out.println("\nMain Menu:");
+              System.out.println("1. Check Balance");
+              System.out.println("2. Withdraw");
+              System.out.println("3. Deposit");
+              System.out.println("4. Change PIN");
+              System.out.println("5. Exit");
+              System.out.print("Enter your choice: ");
+              int choice = scanner.nextInt();
+              scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    checkBalance(45678);
-                    break;
-                case 2:
-                    System.out.print("Enter amount to withdraw: $");
-                    double withdrawAmount = scanner.nextDouble();
-                    withdraw(totalBalance,withdrawAmount);
-                    break;
-                case 3:
-                    System.out.print("Enter amount to deposit: $");
-                    double depositAmount = scanner.nextDouble();
-                    deposit( totalBalance,depositAmount);
-                    break;
-                case 4:
-                    changePin();
-                    break;
-                case 5:
-                    System.out.println("Thank you for using the Apna ATM. Please Visite Again!");
-                    System.exit(0);
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
+              switch (choice) {
+                  case 1:
+                      checkBalance(getBalance());
+                      break;
+                  case 2:
+                      System.out.print("Enter amount to withdraw: $");
+                      double withdrawAmount = scanner.nextDouble();
+                      withdraw(getBalance(), withdrawAmount);
+                      break;
+                  case 3:
+                      System.out.print("Enter amount to deposit: $");
+                      double depositAmount = scanner.nextDouble();
+                      deposit(getBalance(), depositAmount);
+                      break;
+                  case 4:
+                       pin =changePin(getPin());
+                      break;
+                  case 5:
+                      System.out.println("Thank you for using the Apna ATM. Please Visite Again!");
+                      System.exit(0);
+                  default:
+                      System.out.println("Invalid choice. Please try again.");
+              }
+          }
     }
 
 
@@ -169,14 +165,27 @@ public class ATM {
 
 
 
+    public static void setBalance(double newBalance) {
+
+        balance = newBalance;
+    }
+
+
+    public static double getBalance() {
+        return balance;
+    }
 
 
 
+    public static void setPin(String newPin) {
+        pin = newPin;
+    }
 
 
 
-
-
+    public static String getPin() {
+        return pin;
+    }
 
 
 
@@ -186,7 +195,8 @@ public class ATM {
     public static void main(String [] args)
     {
 
-        double totalBalance =800000;
+   Scanner scanner = new Scanner(System.in);
+   displayMenu(scanner);
 
 
     }
